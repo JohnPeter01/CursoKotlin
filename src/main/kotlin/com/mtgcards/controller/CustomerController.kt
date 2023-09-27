@@ -4,6 +4,7 @@ import com.mtgcards.controller.request.PostCustomerRequest
 import com.mtgcards.controller.request.PutCustomerRequest
 import com.mtgcards.model.Customer
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -48,6 +49,12 @@ class CustomerController {
             it.name = request.name
             it.email = request.email
         }
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun delete(@PathVariable id: String) {
+        costumers.removeIf { it.id == id }
     }
 
 }
