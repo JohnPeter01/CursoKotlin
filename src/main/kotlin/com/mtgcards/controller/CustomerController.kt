@@ -1,11 +1,13 @@
 package com.mtgcards.controller
 
 import com.mtgcards.controller.request.PostCustomerRequest
+import com.mtgcards.controller.request.PutCustomerRequest
 import com.mtgcards.model.Customer
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -24,7 +26,7 @@ class CustomerController {
 
     @GetMapping("/{id}")
     fun getOneCustomer(@PathVariable id: String): Customer {
-        return costumers.filter { it.id == id }.first()
+        return costumers.first { it.id == id }
     }
 
     @PostMapping
@@ -37,6 +39,15 @@ class CustomerController {
         }.toString()
         val costumer = Customer(id,request.name,request.email)
         costumers.add(costumer)
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun update(@PathVariable id: String, @RequestBody request: PutCustomerRequest) {
+        costumers.first { it.id == id }.let {
+            it.name = request.name
+            it.email = request.email
+        }
     }
 
 }
