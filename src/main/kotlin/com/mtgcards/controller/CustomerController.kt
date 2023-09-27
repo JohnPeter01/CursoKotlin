@@ -4,6 +4,7 @@ import com.mtgcards.controller.request.PostCustomerRequest
 import com.mtgcards.model.Customer
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -19,6 +20,11 @@ class CustomerController {
     @GetMapping
     fun getAllCustomers(): MutableList<Customer> {
         return costumers
+    }
+
+    @GetMapping("/{id}")
+    fun getOneCustomer(@PathVariable id: String): Customer {
+        return costumers.filter { it.id == id }.first()
     }
 
     @PostMapping
