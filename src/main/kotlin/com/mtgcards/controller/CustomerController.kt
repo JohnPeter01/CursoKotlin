@@ -3,6 +3,7 @@ package com.mtgcards.controller
 import com.mtgcards.controller.request.PostCustomerRequest
 import com.mtgcards.controller.request.PutCustomerRequest
 import com.mtgcards.model.Customer
+import com.mtgcards.service.CostumerService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,48 +18,35 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("customers")
-class CustomerController {
-
-    val costumers = mutableListOf<Customer>()
-
+class CustomerController(
+    val costumerService: CostumerService
+) {
     @GetMapping
     fun getAllCustomers(@RequestParam name: String?): List<Customer> {
-        name?.let {
-            return costumers.filter { it.name.contains(name, true) }
-        }
-        return costumers
+        return costumerService.getAll(name)
     }
 
     @GetMapping("/{id}")
     fun getOneCustomer(@PathVariable id: String): Customer {
-        return costumers.first { it.id == id }
+        return costumerService.search(id)
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createCustomer(@RequestBody request: PostCustomerRequest) {
-        val id = if(costumers.isEmpty())
-             "1"
-        else {
-            costumers.last().id.toInt() + 1
-        }.toString()
-        val costumer = Customer(id,request.name,request.email)
-        costumers.add(costumer)
+        costumerService.create(request)
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@PathVariable id: String, @RequestBody request: PutCustomerRequest) {
-        costumers.first { it.id == id }.let {
-            it.name = request.name
-            it.email = request.email
-        }
+        costumerService.update(id,request)
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun delete(@PathVariable id: String) {
-        costumers.removeIf { it.id == id }
+        costumerService.delete(id)
     }
 
 }
