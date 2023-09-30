@@ -2,6 +2,7 @@ package com.mtgcards.controller
 
 import com.mtgcards.controller.request.PostCustomerRequest
 import com.mtgcards.controller.request.PutCustomerRequest
+import com.mtgcards.extension.toCustomerModel
 import com.mtgcards.model.Customer
 import com.mtgcards.service.CostumerService
 import org.springframework.http.HttpStatus
@@ -34,13 +35,13 @@ class CustomerController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createCustomer(@RequestBody request: PostCustomerRequest) {
-        costumerService.create(request)
+        costumerService.create(request.toCustomerModel())
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun update(@PathVariable id: String, @RequestBody request: PutCustomerRequest) {
-        costumerService.update(id,request)
+        costumerService.update(request.toCustomerModel(id))
     }
 
     @DeleteMapping("/{id}")
