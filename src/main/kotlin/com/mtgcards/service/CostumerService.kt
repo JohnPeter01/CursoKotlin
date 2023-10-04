@@ -16,7 +16,7 @@ class CustomerService(
     }
 
     fun search(id: Int): Customer {
-        return repository.findById(id).orElseThrow();
+        return repository.findById(id).orElseThrow()
     }
 
     fun create(customerData: Customer) {
@@ -25,14 +25,14 @@ class CustomerService(
 
     fun update(customer: Customer) {
         if (!repository.existsById(customer.id!!)){
-            throw Exception("Cliente não existente para atualizado.");
+            throw Exception("Cliente não existente para atualizado.")
         }
         repository.save(customer)
     }
 
     fun delete(id: Int) {
         if (!repository.existsById(id)){
-            throw Exception("Cliente não existente para atualizado.");
+            throw Exception("Cliente não existente para atualizado.")
         }
         repository.deleteById(id)
     }

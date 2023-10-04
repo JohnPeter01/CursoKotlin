@@ -40,13 +40,13 @@ class CustomerController(
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun update(@PathVariable id: Int, @RequestBody request: PutCustomerRequest) {
+    fun updateCustomer(@PathVariable id: Int, @RequestBody request: PutCustomerRequest) {
         customerService.update(request.toCustomerModel(id))
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable id: Int) {
+    fun deleteCustomer(@PathVariable id: Int) {
         customerService.delete(id)
     }
 
