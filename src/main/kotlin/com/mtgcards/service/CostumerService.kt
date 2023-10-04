@@ -1,44 +1,40 @@
 package com.mtgcards.service
 
 import com.mtgcards.model.Customer
+import com.mtgcards.repository.CustomerRepository
 import org.springframework.stereotype.Service
 
 @Service
-class CostumerService {
-    val costumers = mutableListOf<Customer>()
-
+class CustomerService(
+    val repository: CustomerRepository
+) {
     fun getAll(name: String?): List<Customer> {
         name?.let {
-            return costumers.filter { it.name.contains(name, true) }
+            return repository.findByNameContaining(it)
         }
-        return costumers
+        return repository.findAll().toList()
     }
 
-    fun search(id: String): Customer {
-        return costumers.first { it.id == id }
+    fun search(id: Int): Customer {
+        return repository.findById(id).orElseThrow();
     }
 
-    fun create(costumerData: Customer) {
-        val id = if(costumers.isEmpty())
-            "1"
-        else {
-            costumers.last().id!!.toInt() + 1
-        }.toString()
-
-        costumerData.id = id;
-        val newCostumer = Customer(id,costumerData.name,costumerData.email)
-        costumers.add(newCostumer)
+    fun create(customerData: Customer) {
+        repository.save(customerData)
     }
 
     fun update(customer: Customer) {
-        costumers.first { it.id == customer.id }.let {
-            it.name = customer.name
-            it.email = customer.email
+        if (!repository.existsById(customer.id!!)){
+            throw Exception("Cliente não existente para atualizado.");
         }
+        repository.save(customer)
     }
 
-    fun delete(id: String) {
-        costumers.removeIf { it.id == id }
+    fun delete(id: Int) {
+        if (!repository.existsById(id)){
+            throw Exception("Cliente não existente para atualizado.");
+        }
+        repository.deleteById(id)
     }
 
 }
