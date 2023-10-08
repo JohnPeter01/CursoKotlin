@@ -6,7 +6,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class CustomerService(
-    val repository: CustomerRepository
+    val repository: CustomerRepository,
+    val cardService: CardService
 ) {
     fun getAll(name: String?): List<Customer> {
         name?.let {
@@ -15,7 +16,7 @@ class CustomerService(
         return repository.findAll().toList()
     }
 
-    fun search(id: Int): Customer {
+    fun getById(id: Int): Customer {
         return repository.findById(id).orElseThrow()
     }
 
@@ -34,6 +35,8 @@ class CustomerService(
         if (!repository.existsById(id)){
             throw Exception("Cliente não existente para atualizado.")
         }
+        val customer = getById(id)
+        cardService.deleteByCustomer(customer);
         repository.deleteById(id)
     }
 

@@ -1,9 +1,10 @@
 package com.mtgcards.controller
 
-import com.mtgcards.controller.request.PostCustomerRequest
-import com.mtgcards.controller.request.PutCustomerRequest
-import com.mtgcards.extension.toCustomer
-import com.mtgcards.model.Customer
+import com.mtgcards.controller.request.PostCardRequest
+import com.mtgcards.controller.request.PutCardRequest
+import com.mtgcards.extension.toCard
+import com.mtgcards.model.Card
+import com.mtgcards.service.CardService
 import com.mtgcards.service.CustomerService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -18,36 +19,39 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("customers")
-class CustomerController(
+@RequestMapping("cards")
+class CardController(
+    val cardService: CardService,
     val customerService: CustomerService
 ) {
     @GetMapping
-    fun getAllCustomers(@RequestParam name: String?): List<Customer> {
-        return customerService.getAll(name)
-    }
+    fun getAllCards(@RequestParam name: String?): List<Card> = cardService.getAll(name)
 
     @GetMapping("/{id}")
-    fun getOneCustomer(@PathVariable id: Int): Customer {
-        return customerService.getById(id)
-    }
+    fun getOneCardById(@PathVariable id: Int): Card = cardService.getById(id)
+
+
+    @GetMapping("/new")
+    fun getNewCards(): List<Card> = cardService.getByStatus()
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createCustomer(@RequestBody request: PostCustomerRequest) {
-        customerService.create(request.toCustomer())
+    fun createCard(@RequestBody request: PostCardRequest) {
+        val customer= customerService.getById(request.customerId)
+        cardService.create(request.toCard(customer))
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun updateCustomer(@PathVariable id: Int, @RequestBody request: PutCustomerRequest) {
-        customerService.update(request.toCustomer(id))
+    fun updateCustomer(@PathVariable id: Int, @RequestBody request: PutCardRequest) {
+        val cardSaved = cardService.getById(id)
+        cardService.update(request.toCard(cardSaved))
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteCustomer(@PathVariable id: Int) {
-        customerService.delete(id)
+    fun deleteCard(@PathVariable id: Int) {
+        cardService.delete(id)
     }
 
 }
