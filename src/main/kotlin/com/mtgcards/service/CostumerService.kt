@@ -1,7 +1,10 @@
 package com.mtgcards.service
 
+import com.mtgcards.enums.CustomerStatus
 import com.mtgcards.model.Customer
 import com.mtgcards.repository.CustomerRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -9,11 +12,11 @@ class CustomerService(
     val repository: CustomerRepository,
     val cardService: CardService
 ) {
-    fun getAll(name: String?): List<Customer> {
+    fun getAll(name: String?,pageable: Pageable): Page<Customer> {
         name?.let {
-            return repository.findByNameContaining(it)
+            return repository.findByNameContaining(it, pageable)
         }
-        return repository.findAll().toList()
+        return repository.findAll(pageable)
     }
 
     fun getById(id: Int): Customer {
@@ -36,8 +39,9 @@ class CustomerService(
             throw Exception("Cliente não existente para atualizado.")
         }
         val customer = getById(id)
-        cardService.deleteByCustomer(customer);
-        repository.deleteById(id)
+        customer.status = CustomerStatus.INATIVO
+        cardService.deleteByCustomer(customer)
+        repository.save(customer)
     }
 
 }

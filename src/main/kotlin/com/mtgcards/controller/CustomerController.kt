@@ -2,9 +2,13 @@ package com.mtgcards.controller
 
 import com.mtgcards.controller.request.PostCustomerRequest
 import com.mtgcards.controller.request.PutCustomerRequest
+import com.mtgcards.controller.response.CustomerResponse
 import com.mtgcards.extension.toCustomer
-import com.mtgcards.model.Customer
+import com.mtgcards.extension.toResponse
 import com.mtgcards.service.CustomerService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,13 +27,13 @@ class CustomerController(
     val customerService: CustomerService
 ) {
     @GetMapping
-    fun getAllCustomers(@RequestParam name: String?): List<Customer> {
-        return customerService.getAll(name)
+    fun getAllCustomers(@RequestParam name: String?, @PageableDefault(page = 0,size = 10) pageable: Pageable): Page<CustomerResponse> {
+        return customerService.getAll(name, pageable).map { it.toResponse() }
     }
 
     @GetMapping("/{id}")
-    fun getOneCustomer(@PathVariable id: Int): Customer {
-        return customerService.getById(id)
+    fun getOneCustomer(@PathVariable id: Int): CustomerResponse {
+        return customerService.getById(id).toResponse()
     }
 
     @PostMapping
@@ -41,7 +45,8 @@ class CustomerController(
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun updateCustomer(@PathVariable id: Int, @RequestBody request: PutCustomerRequest) {
-        customerService.update(request.toCustomer(id))
+        val previousCustomer = customerService.getById(id)
+        customerService.update(request.toCustomer(previousCustomer))
     }
 
     @DeleteMapping("/{id}")

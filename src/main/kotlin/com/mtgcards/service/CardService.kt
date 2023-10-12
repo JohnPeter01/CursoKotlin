@@ -4,25 +4,24 @@ import com.mtgcards.enums.CardStatus
 import com.mtgcards.model.Card
 import com.mtgcards.model.Customer
 import com.mtgcards.repository.CardRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
 class CardService(
     val repository: CardRepository
 ) {
-    fun getAll(name: String?): List<Card> {
-        name?.let {
-            return repository.findByNameContaining(it)
-        }
-        return repository.findAll().toList()
+    fun getAll(pageable: Pageable): Page<Card> {
+        return repository.findAll(pageable)
     }
 
     fun getById(id: Int): Card {
         return repository.findById(id).orElseThrow()
     }
 
-    fun getByStatus(): List<Card> {
-        return repository.findByStatus(CardStatus.MINT)
+    fun getByStatus(pageable: Pageable): Page<Card> {
+        return repository.findByStatus(CardStatus.ATIVO, pageable)
     }
 
     fun create(cardData: Card) {
@@ -40,13 +39,16 @@ class CardService(
         if (!repository.existsById(id)){
             throw Exception("Card não existente para atualizado.")
         }
-        repository.deleteById(id)
+        val card = repository.findById(id).orElseThrow()
+        card.status = CardStatus.INATIVO
+        repository.save(card)
     }
 
     fun deleteByCustomer(customer: Customer) {
         val cards = repository.findByCustomer(customer)
         for (card in cards){
-            repository.delete(card)
+            card.status = CardStatus.INATIVO
+            repository.save(card)
         }
     }
 

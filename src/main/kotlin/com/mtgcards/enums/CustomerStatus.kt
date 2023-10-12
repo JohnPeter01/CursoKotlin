@@ -1,8 +1,6 @@
 package com.mtgcards.enums
 
-enum class CardStatus {
+enum class CustomerStatus {
     ATIVO,
-    EMREVISAO,
     INATIVO
-
 }

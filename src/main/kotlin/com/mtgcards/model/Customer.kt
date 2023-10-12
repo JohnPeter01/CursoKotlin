@@ -1,10 +1,7 @@
 package com.mtgcards.model
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import com.mtgcards.enums.CustomerStatus
+import jakarta.persistence.*
 
 @Entity(name = "customer")
 data class Customer(
@@ -15,4 +12,7 @@ data class Customer(
     var name: String,
     @Column
     var email: String,
+    @Column
+    @Enumerated(EnumType.STRING)
+    var status: CustomerStatus,
     )
