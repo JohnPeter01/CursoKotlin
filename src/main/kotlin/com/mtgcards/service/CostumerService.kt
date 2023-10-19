@@ -1,6 +1,8 @@
 package com.mtgcards.service
 
 import com.mtgcards.enums.CustomerStatus
+import com.mtgcards.enums.Errors
+import com.mtgcards.exception.NotFoundException
 import com.mtgcards.model.Customer
 import com.mtgcards.repository.CustomerRepository
 import org.springframework.data.domain.Page
@@ -20,7 +22,7 @@ class CustomerService(
     }
 
     fun getById(id: Int): Customer {
-        return repository.findById(id).orElseThrow()
+        return repository.findById(id).orElseThrow { NotFoundException(Errors.ML201.message.format(id), Errors.ML201.code) }
     }
 
     fun create(customerData: Customer) {

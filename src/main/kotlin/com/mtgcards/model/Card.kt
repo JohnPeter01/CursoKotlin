@@ -2,6 +2,8 @@ package com.mtgcards.model
 
 import com.mtgcards.enums.CardConservaiton
 import com.mtgcards.enums.CardStatus
+import com.mtgcards.enums.Errors
+import com.mtgcards.exception.BadRequestException
 import jakarta.persistence.*
 import java.math.BigDecimal
 
@@ -32,7 +34,7 @@ data class Card(
     var status: CardStatus? = null
         set(value) {
             if(CardStatus.EMREVISAO == field || CardStatus.INATIVO == field)
-                throw Exception("Não é possivel alterar um card com status $field")
+                throw BadRequestException(Errors.ML102.message.format(field),Errors.ML201.code)
             field = value
         }
 }

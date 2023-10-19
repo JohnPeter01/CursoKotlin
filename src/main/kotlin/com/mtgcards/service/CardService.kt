@@ -1,6 +1,8 @@
 package com.mtgcards.service
 
 import com.mtgcards.enums.CardStatus
+import com.mtgcards.enums.Errors
+import com.mtgcards.exception.NotFoundException
 import com.mtgcards.model.Card
 import com.mtgcards.model.Customer
 import com.mtgcards.repository.CardRepository
@@ -17,7 +19,7 @@ class CardService(
     }
 
     fun getById(id: Int): Card {
-        return repository.findById(id).orElseThrow()
+        return repository.findById(id).orElseThrow { NotFoundException(Errors.ML101.message.format(id), Errors.ML101.code) }
     }
 
     fun getByStatus(pageable: Pageable): Page<Card> {
