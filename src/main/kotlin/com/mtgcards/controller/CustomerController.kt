@@ -6,6 +6,7 @@ import com.mtgcards.controller.response.CustomerResponse
 import com.mtgcards.extension.toCustomer
 import com.mtgcards.extension.toResponse
 import com.mtgcards.service.CustomerService
+import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -38,7 +39,7 @@ class CustomerController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createCustomer(@RequestBody request: PostCustomerRequest) {
+    fun createCustomer(@RequestBody @Valid request: PostCustomerRequest) {
         customerService.create(request.toCustomer())
     }
 

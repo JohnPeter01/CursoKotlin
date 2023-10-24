@@ -7,6 +7,7 @@ import com.mtgcards.extension.toCard
 import com.mtgcards.extension.toResponse
 import com.mtgcards.service.CardService
 import com.mtgcards.service.CustomerService
+import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -39,7 +40,7 @@ class CardController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createCard(@RequestBody request: PostCardRequest) {
+    fun createCard(@RequestBody @Valid request: PostCardRequest) {
         val customer= customerService.getById(request.customerId)
         cardService.create(request.toCard(customer))
     }
