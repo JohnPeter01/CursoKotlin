@@ -41,7 +41,7 @@ class CardController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createCard(@RequestBody @Valid request: PostCardRequest) {
-        val customer= customerService.getById(request.customerId)
+        val customer = customerService.getById(request.customerId)
         cardService.create(request.toCard(customer))
     }
 
